@@ -58,3 +58,25 @@ npx shadcn-ui@latest init
 npx shadcn-ui@latest add button
 ```
 
+## install prisma
+
+in dev dependencies
+
+```
+ npm i -D prisma
+```
+
+also this one
+
+```
+ npm i @prisma/client
+```
+
+## setup prisma
+
+also this one
+
+```
+ npx prisma init
+```
+
