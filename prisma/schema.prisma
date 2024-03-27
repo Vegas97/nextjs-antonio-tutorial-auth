@@ -14,11 +14,30 @@ datasource db {
 }
 
 model User {
-  // @id marks the field as the primary key
-  // @default(cuid()) generates a unique ID for the field
-  // es. of cuid() -> cjz3v0k4q0000b3z1z6z1z1z1
-  id String @id @default(cuid())
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  password      String?
+  image         String?
+  accounts      Account[]
+}
 
-  // name is a required field, otherwise was written as name String?
-  name String
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
 }
