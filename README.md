@@ -74,9 +74,77 @@ also this one
 
 ## setup prisma
 
-also this one
+initiate prisma, this will create a prisma folder with a schema.prisma file
 
 ```
  npx prisma init
 ```
 
+go to neon database and create a new database.
+you'll get the DATABASE_URL for .env file and the code insert it in the schema.prisma file
+
+then we can generate the client
+this will create a client folder in the prisma folder
+
+```
+ npx prisma generate
+```
+
+```
+vegas@M1-MAX-Diego nextjs-antonio-tutorial-auth % npx prisma generate
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.11.0) to ./node_modules/@prisma/client in 43ms
+
+Start using Prisma Client in Node.js (See: https://pris.ly/d/client)
+
+
+import { PrismaClient } from '@prisma/client'
+const prisma = new PrismaClient()
+
+
+or start using Prisma Client at the edge (See: https://pris.ly/d/accelerate)
+
+
+import { PrismaClient } from '@prisma/client/edge'
+const prisma = new PrismaClient()
+
+
+See other ways of importing Prisma Client: http://pris.ly/d/importing-client
+
+┌─────────────────────────────────────────────────────────────┐
+│  Deploying your app to serverless or edge functions?        │
+│  Try Prisma Accelerate for connection pooling and caching.  │
+│  https://pris.ly/cli/accelerate                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+basically when you will use it like this,
+in the edit as soon you type the dot (.) after the db
+there will be actually a suggestion to user because is an object generated in the node_modules.
+
+```
+import { db } from '@/lib/db'
+const user = await db.user.findMany()
+```
+
+add a new script in the package.json file
+
+```
+"push:dev": "dotenv -e .env.local -- npx prisma db push",
+```
+
+at run it like this
+
+```
+npm run push:dev
+```
+
+we did this because the DATABASE_URL is in the .env.local file
+and contains sensitive information, and wont be pushed to the git repository
+
+## configure Auth.js Prisma Adapter
+
+```
+npm i @auth/prisma-adapter
+```

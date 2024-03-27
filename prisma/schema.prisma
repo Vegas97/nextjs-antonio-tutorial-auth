@@ -12,3 +12,13 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  // @id marks the field as the primary key
+  // @default(cuid()) generates a unique ID for the field
+  // es. of cuid() -> cjz3v0k4q0000b3z1z6z1z1z1
+  id String @id @default(cuid())
+
+  // name is a required field, otherwise was written as name String?
+  name String
+}
