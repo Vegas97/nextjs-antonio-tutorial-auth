@@ -160,3 +160,62 @@ also install types
 ```
 npm i -D @types/bcrypt
 ```
+
+## Install Next Auth v5
+
+https://authjs.dev/guides/upgrade-to-v5
+
+```
+npm install next-auth@beta
+```
+
+we can generate the AUTH_SECRET and save it in the .env.local file
+
+```
+npx auth secret
+```
+
+```
+./auth.ts
+
+import NextAuth from "next-auth"
+import GitHub from "next-auth/providers/github"
+
+export const {
+  handlers: { GET, POST },
+  auth,
+} = NextAuth({
+  providers: [GitHub],
+})
+```
+
+```
+app/api/auth/[...nextauth]/route.ts
+
+export { GET, POST } from "@/auth"
+// export const runtime = "edge" // optional // not supported in prisma
+```
+
+```
+./middleware.ts
+
+import { auth } from "./auth";
+
+export default auth((req) => {
+  const route = req.nextUrl.pathname;
+  const isLoggedIn = !!req.auth;
+
+  const info = {
+    route: route,
+    isLoggedIn: isLoggedIn,
+  };
+
+  console.log("middleware ", info);
+});
+
+// Optionally, don't invoke Middleware on some paths
+export const config = {
+  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
+};
+
+```
