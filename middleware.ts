@@ -1,4 +1,7 @@
-import { auth } from "./auth";
+import authConfig from "./auth.config";
+import NextAuth from "next-auth";
+
+export const { auth } = NextAuth(authConfig);
 
 // middleware works on the edge.
 // but prisma don't support it, we can't use prism adapter in middleware
