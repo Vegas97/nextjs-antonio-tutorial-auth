@@ -148,3 +148,15 @@ and contains sensitive information, and wont be pushed to the git repository
 ```
 npm i @auth/prisma-adapter
 ```
+
+## for password install bcrypt
+
+```
+npm i bcrypt
+```
+
+also install types
+
+```
+npm i -D @types/bcrypt
+```
