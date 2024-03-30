@@ -16,10 +16,27 @@ export const {
   signIn,
   signOut,
 } = NextAuth({
+  events: {
+    async linkAccount({ user }) {
+      console.log({ fromEventLinkAccount: user });
+
+      await db.user.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          emailVerified: new Date(),
+        },
+      });
+    },
+    async signIn({ user }) {
+      console.log({ fromEventSignIn: user });
+    },
+  },
   callbacks: {
     async signIn({ credentials, account, profile, user, email }) {
       console.log({
-        fromSignIn: {
+        fromCallbackSignIn: {
           credentials,
           account,
           profile,
@@ -51,7 +68,7 @@ export const {
       // token.role = existingUser.role;
 
       console.log({
-        fromJWT: {
+        fromCallbackJWT: {
           token,
           user,
           session,
@@ -74,7 +91,7 @@ export const {
       }
 
       console.log({
-        fromSession: {
+        fromCallbackSession: {
           token,
           session,
           sessionUser: session.user,

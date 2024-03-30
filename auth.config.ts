@@ -3,14 +3,33 @@ import Credentials from "next-auth/providers/credentials";
 import type { NextAuthConfig } from "next-auth";
 import { LoginSchema } from "@/schemas";
 import { getUserByEmail } from "@/data/user";
-import bcrypt from "bcryptjs"; // this will be imported in the middleware.
+import bcrypt from "bcryptjs";
+import GitHub from "@auth/core/providers/github";
+import Google from "@auth/core/providers/google";
+import { env } from "@/lib/env"; // this will be imported in the middleware.
 
 // this will be imported in the middleware.
 // and as yiu can see there is no prisma here,
 // so will be fine for him.
 
+env.checkNotEmptyEnvVars([
+  "GITHUB_CLIENT_ID",
+  "GITHUB_CLIENT_SECRET",
+  "GOOGLE_CLIENT_ID",
+  "GOOGLE_CLIENT_SECRET",
+]);
+
 export default {
   providers: [
+    Google({
+      clientId: env.get.googleClientId,
+      clientSecret: env.get.googleClientSecret,
+      // allowDangerousEmailAccountLinking: true,
+    }),
+    GitHub({
+      clientId: env.get.githubClientId,
+      clientSecret: env.get.githubSecret,
+    }),
     Credentials({
       async authorize(credentials) {
         // parse the credentials with LoginSchema
