@@ -7,6 +7,7 @@ import { UserRole } from "@prisma/client";
 declare module "next-auth" {
   interface User {
     role: UserRole;
+    emailVerified: Date;
   }
 }
 
@@ -48,6 +49,14 @@ export const {
           user,
         },
       });
+
+      // Allow OAuth without email verification
+      if (account?.provider !== "credentials") return true;
+
+      // Prevent sign in without email verification
+      if (!user.emailVerified) {
+        return false;
+      }
 
       return true;
     },

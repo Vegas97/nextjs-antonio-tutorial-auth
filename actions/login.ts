@@ -5,6 +5,7 @@ import { z } from "zod";
 import { signIn } from "@/auth";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { AuthError } from "next-auth";
+import { getUserByEmail } from "@/data/user";
 
 export const login = async (values: z.infer<typeof LoginSchema>) => {
   console.log(values);
@@ -17,6 +18,23 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
 
   const { email, password } = validatedFields.data;
 
+  const existingUser = await getUserByEmail(email);
+
+  console.log("existingUser", existingUser);
+
+  // if user doesn't exist or doesn't have email/password (means they signed up with a provider)
+  if (!existingUser || !existingUser.email || !existingUser.password) {
+    return { error: "Email doesn't exist!" };
+  }
+
+  // if (!existingUser.emailVerified) {
+  //   const verificationToken = await generateVerificationToken(
+  //     existingUser.email,
+  //   );
+  //
+  //   return { error: "Email not verified yet! New confirmation sent!" };
+  // }
+
   try {
     await signIn("credentials", {
       email,
@@ -24,6 +42,8 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
       redirectTo: DEFAULT_LOGIN_REDIRECT,
     });
   } catch (error) {
+    console.log("error", error);
+
     if (error instanceof AuthError) {
       switch (error.type) {
         case "CredentialsSignin":
