@@ -2,10 +2,9 @@
 
 import { RegisterSchema } from "@/schemas";
 import { z } from "zod";
-import bcrypt from "bcryptjs";
-import { db } from "@/lib/db";
-import { getUserByEmail } from "@/data/user";
+import { createUser, getUserByEmail } from "@/data/user";
 import { generateVerificationToken } from "@/lib/tokens";
+import { sendVerificationEmail } from "@/lib/mail";
 
 export const register = async (values: z.infer<typeof RegisterSchema>) => {
   console.log(values);
@@ -17,7 +16,6 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
   }
 
   const { email, password, name } = validatedFields.data;
-  const hashedPassword = await bcrypt.hash(password, 10);
 
   const existingUser = await getUserByEmail(email);
 
@@ -25,15 +23,18 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
     return { error: "Email already taken!" };
   }
 
-  await db.user.create({
-    data: {
-      name,
-      email,
-      password: hashedPassword,
-    },
-  });
+  try {
+    await createUser(name, email, password);
 
-  const verificationToken = await generateVerificationToken(email);
+    const verificationToken = await generateVerificationToken(email);
+
+    await sendVerificationEmail(
+      verificationToken.email,
+      verificationToken.token,
+    );
+  } catch (e) {
+    return { error: "Something went wrong!" };
+  }
 
   return { success: "Confirmation email sent!" };
 };

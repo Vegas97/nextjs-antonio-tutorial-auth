@@ -44,6 +44,12 @@ const get = {
   // nextauth
   // authSecret: getEnvironmentVariable("AUTH_SECRET"),
   // authUrl: getEnvironmentVariable("AUTH_URL"),
+
+  // public
+  domain: getEnvironmentVariable("DOMAIN"),
+
+  // resend
+  resendApiKey: getEnvironmentVariable("RESEND_API_KEY"),
 };
 
 export const env = {

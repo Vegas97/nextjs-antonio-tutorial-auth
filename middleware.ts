@@ -20,11 +20,19 @@ export default auth(
       isLoggedIn: isLoggedIn,
     };
 
-    console.log("middleware ", info);
-
     const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
     const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
     const isAuthRoute = authRoutes.includes(nextUrl.pathname);
+
+    console.log({
+      fromMiddleware: {
+        info,
+        publicRoutes,
+        isApiAuthRoute,
+        isPublicRoute,
+        isAuthRoute,
+      },
+    });
 
     if (isApiAuthRoute) {
       return;

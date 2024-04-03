@@ -23,3 +23,9 @@ export const getVerificationTokenByEmail = async (email: string) => {
     return null;
   }
 };
+
+export const deleteVerificationToken = async (id: string) => {
+  await db.verificationToken.delete({
+    where: { id },
+  });
+};
