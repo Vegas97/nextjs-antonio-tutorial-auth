@@ -4,13 +4,6 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { db } from "@/lib/db";
 import { UserRole } from "@prisma/client";
 
-declare module "next-auth" {
-  interface User {
-    role: UserRole;
-    emailVerified: Date;
-  }
-}
-
 export const {
   handlers: { GET, POST },
   auth,
