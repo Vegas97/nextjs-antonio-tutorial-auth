@@ -1,6 +1,7 @@
 /**
  * An array of routes that are accessible to the public
  * These routes do not require authentication
+ * Available for both logged in and logged out users
  * @type {string[]}
  */
 export const publicRoutes = ["/", "/auth/new-verification"];
@@ -8,6 +9,7 @@ export const publicRoutes = ["/", "/auth/new-verification"];
 /**
  * An array of routes that are used for authentication
  * These routes will redirect logged in users to /settings
+ * Available only for logged out users
  * @type {string[]}
  */
 export const authRoutes = [
@@ -15,6 +17,7 @@ export const authRoutes = [
   "/auth/register",
   "/auth/error",
   "/auth/reset",
+  "/auth/new-password",
 ];
 
 /**
