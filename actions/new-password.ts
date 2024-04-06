@@ -3,13 +3,13 @@
 import * as z from "zod";
 import bcrypt from "bcryptjs";
 
-import { NewPasswordSchema } from "@/schemas";
+import { NewPasswordWithRepeatSchema } from "@/schemas";
 import { getPasswordResetTokenByToken } from "@/data/password-reset-token";
 import { getUserByEmail } from "@/data/user";
 import { db } from "@/lib/db";
 
 export const newPassword = async (
-  values: z.infer<typeof NewPasswordSchema>,
+  values: z.infer<typeof NewPasswordWithRepeatSchema>,
   token?: string | null,
 ) => {
   console.log("values", values);
@@ -19,7 +19,7 @@ export const newPassword = async (
     return { error: "Missing token!" };
   }
 
-  const validatedFields = NewPasswordSchema.safeParse(values);
+  const validatedFields = NewPasswordWithRepeatSchema.safeParse(values);
 
   if (!validatedFields.success) {
     return { error: "Invalid fields!" };
