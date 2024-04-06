@@ -6,7 +6,7 @@ import { useState, useTransition } from "react";
 import { useSearchParams } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { NewPasswordSchema } from "@/schemas";
+import { NewPasswordWithRepeatSchema } from "@/schemas";
 import { Input } from "@/components/ui/input";
 import {
   Form,
@@ -30,14 +30,15 @@ export const NewPasswordForm = () => {
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm<z.infer<typeof NewPasswordSchema>>({
-    resolver: zodResolver(NewPasswordSchema),
+  const form = useForm<z.infer<typeof NewPasswordWithRepeatSchema>>({
+    resolver: zodResolver(NewPasswordWithRepeatSchema),
     defaultValues: {
       password: "",
+      confirmPassword: "",
     },
   });
 
-  const onSubmit = (values: z.infer<typeof NewPasswordSchema>) => {
+  const onSubmit = (values: z.infer<typeof NewPasswordWithRepeatSchema>) => {
     setError("");
     setSuccess("");
 
@@ -64,6 +65,24 @@ export const NewPasswordForm = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      disabled={isPending}
+                      placeholder="******"
+                      type="password"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm Password</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
