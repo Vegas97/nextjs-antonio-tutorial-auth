@@ -1,12 +1,11 @@
 "use client";
 
-import * as z from "zod";
+// React and Next.js Imports
 import { useForm } from "react-hook-form";
-import { useState, useTransition } from "react";
+import { useState, useTransition } from "react"; // Schema Imports
+import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-import { RegisterSchema } from "@/schemas";
-import { Input } from "@/components/ui/input";
+import { RegisterSchema } from "@/schemas"; // UI Component Imports
 import {
   Form,
   FormControl,
@@ -15,10 +14,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { CardWrapper } from "@/components/auth/card-wrapper";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button"; // Helper Component Imports
 import { FormError } from "@/components/form-error";
-import { FormSuccess } from "@/components/form-success";
+import { FormSuccess } from "@/components/form-success"; // Action Imports
 import { register } from "@/actions/register";
 
 export const RegisterForm = () => {

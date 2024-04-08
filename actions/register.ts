@@ -1,9 +1,14 @@
 "use server";
 
-import { RegisterSchema } from "@/schemas";
+// Schema Imports
 import { z } from "zod";
+import { RegisterSchema } from "@/schemas";
+
+// Data Imports
 import { createUser, getUserByEmail } from "@/data/user";
 import { generateVerificationToken } from "@/lib/tokens";
+
+// Mail Imports
 import { sendVerificationEmail } from "@/lib/mail";
 
 export const register = async (values: z.infer<typeof RegisterSchema>) => {
