@@ -1,13 +1,11 @@
 "use client";
 
 // React and Next.js Imports
-import { useForm } from "react-hook-form";
 import { useState, useTransition } from "react";
 import { useSearchParams } from "next/navigation";
 
 // Schema Imports
 import * as z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema } from "@/schemas";
 
 // UI Component Imports
@@ -30,6 +28,7 @@ import { FormSuccess } from "@/components/form-success";
 
 // Action Imports
 import { login } from "@/actions/login";
+import { useLoginFormWithCode } from "@/lib/forms";
 
 export const LoginForm = () => {
   const searchParams = useSearchParams();
@@ -44,36 +43,26 @@ export const LoginForm = () => {
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm<z.infer<typeof LoginSchema>>({
-    resolver: zodResolver(LoginSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
-  });
+  const form = useLoginFormWithCode(showTwoFactor);
 
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {
-    console.log("Submit");
     setError("");
     setSuccess("");
 
     startTransition(() => {
-      console.log("Start transition");
       login(values)
         .then((data) => {
-          console.log("in then", data);
+          form.resetField("code");
+
           if (data?.error) {
-            form.reset();
             setError(data.error);
           }
 
           if (data?.success) {
-            form.reset();
             setSuccess(data.success);
           }
 
           if (data?.twoFactor) {
-            form.resetField("code");
             setShowTwoFactor(true);
           }
         })
