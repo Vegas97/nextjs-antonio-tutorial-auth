@@ -28,9 +28,9 @@ export const {
         },
       });
     },
-    async signIn({ user }) {
-      console.log({ fromEventSignIn: user });
-    },
+    // async signIn({ user }) {
+    //   console.log({ fromEventSignIn: user });
+    // },
   },
   callbacks: {
     async signIn({ credentials, account, profile, user, email }) {
@@ -73,29 +73,21 @@ export const {
         token.role = user.role;
       }
 
-      // option2. calling db each time
+      if (user && user.hasOwnProperty("isTwoFactorEnabled")) {
+        token.isTwoFactorEnabled = user.isTwoFactorEnabled;
+      }
 
-      // // if sub is not set, return the token as is (we do nothing)
-      // if (!token.sub) return token;
-
-      // // we get the user from db
-      // const existingUser = await getUserById(token.sub);
-
-      // // if user does not exist, return the token as is (we do nothing)
-      // if (!existingUser) return token;
-
-      // // if user exist we add the user role to the token
-      // token.role = existingUser.role;
-
-      console.log({
-        fromCallbackJWT: {
-          token,
-          user,
-          session,
-          profile,
-          account,
-        },
-      });
+      if (user) {
+        console.log({
+          fromCallbackJWT: {
+            token,
+            user,
+            session,
+            profile,
+            account,
+          },
+        });
+      }
 
       return token;
     },
@@ -105,9 +97,11 @@ export const {
       }
 
       if (token.role && session.user) {
-        // Conversion from string to enum
-        // session.user.role = UserRole[token.role as keyof typeof UserRole]; // option 1.
         session.user.role = token.role as UserRole;
+      }
+
+      if (token.hasOwnProperty("isTwoFactorEnabled") && session.user) {
+        session.user.isTwoFactorEnabled = token.isTwoFactorEnabled;
       }
 
       console.log({

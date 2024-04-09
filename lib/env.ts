@@ -10,9 +10,10 @@ const getEnvironmentVariable = (
       );
     }
     // also lunch a warning
-    console.warn(
-      `WARNING: Couldn't find environment variable: ${environmentVariable}`,
-    );
+    // TODO: dont forget this log
+    // console.warn(
+    //   `WARNING: Couldn't find environment variable: ${environmentVariable}`,
+    // );
     return "";
   } else {
     return unvalidatedEnvironmentVariable;

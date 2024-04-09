@@ -24,15 +24,15 @@ export default auth(
     const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
     const isAuthRoute = authRoutes.includes(nextUrl.pathname);
 
-    console.log({
-      fromMiddleware: {
-        info,
-        publicRoutes,
-        isApiAuthRoute,
-        isPublicRoute,
-        isAuthRoute,
-      },
-    });
+    // console.log({
+    //   fromMiddleware: {
+    //     info,
+    //     publicRoutes,
+    //     isApiAuthRoute,
+    //     isPublicRoute,
+    //     isAuthRoute,
+    //   },
+    // });
 
     // If the route is an API auth route, do nothing
     if (isApiAuthRoute) {
