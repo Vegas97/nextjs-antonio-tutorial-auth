@@ -1,20 +1,22 @@
-import { auth, signOut } from "@/auth";
+"use client";
 
-const SettingsPage = async () => {
-  const session = await auth();
+import { logout } from "@/actions/logout";
+import { useCurrentUser } from "@/hooks/use-current-user";
+
+const SettingsPage = () => {
+  const user = useCurrentUser();
+
+  const onClick = async () => {
+    await logout();
+  };
+
   return (
-    <div>
+    <div className="bg-white p-10 rounded-xl w-[600px]">
       <p>Settings Page</p>
-      <div>{JSON.stringify(session)}</div>
-      <form
-        action={async () => {
-          "use server";
-
-          await signOut();
-        }}
-      >
-        <button type="submit">Sign Out</button>
-      </form>
+      <div className="flex flex-wrap py-5">{JSON.stringify(user, null, 2)}</div>
+      <button onClick={onClick} type="submit">
+        Sign Out
+      </button>
     </div>
   );
 };

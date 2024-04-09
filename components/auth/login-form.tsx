@@ -26,9 +26,9 @@ import Link from "next/link";
 import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
 
-// Action Imports
+// Actions & Hooks Imports
 import { login } from "@/actions/login";
-import { useLoginFormWithCode } from "@/lib/forms";
+import { useLoginFormWithCode } from "@/hooks/use-login-form-with-code";
 
 export const LoginForm = () => {
   const searchParams = useSearchParams();
