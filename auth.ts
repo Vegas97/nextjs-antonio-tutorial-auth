@@ -87,6 +87,8 @@ export const {
             token.name = user.name;
           }
 
+          token.isOAuth = account && account?.provider !== "credentials";
+
           if (user.hasOwnProperty("isTwoFactorEnabled")) {
             token.isTwoFactorEnabled = user.isTwoFactorEnabled;
           }
@@ -101,6 +103,10 @@ export const {
 
           if (session.user.name) {
             token.name = session.user.name;
+          }
+
+          if (session.user.hasOwnProperty("isOAuth")) {
+            token.isOAuth = session.user.isOAuth;
           }
 
           if (session.user.hasOwnProperty("isTwoFactorEnabled")) {
@@ -141,20 +147,24 @@ export const {
     },
     async session({ token, session, user, newSession, trigger }) {
       if (session.user) {
-        if (token.sub) {
+        if (token.hasOwnProperty("sub") && token.sub) {
           session.user.id = token.sub;
         }
 
-        if (token.role) {
+        if (token.hasOwnProperty("role") && token.role) {
           session.user.role = token.role as UserRole;
         }
 
-        if (token.name) {
+        if (token.hasOwnProperty("name") && token.name) {
           session.user.name = token.name;
         }
 
-        if (token.email) {
+        if (token.hasOwnProperty("email") && token.email) {
           session.user.email = token.email;
+        }
+
+        if (token.hasOwnProperty("isOAuth")) {
+          session.user.isOAuth = token.isOAuth;
         }
 
         if (token.hasOwnProperty("isTwoFactorEnabled")) {
