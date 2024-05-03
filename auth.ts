@@ -5,6 +5,8 @@ import { db } from "@/lib/db";
 import { UserRole } from "@prisma/client";
 import { getTwoFactorConfirmationByUserId } from "@/data/two-factor-confirmation";
 
+const showLogs = false;
+
 export const {
   handlers: { GET, POST },
   auth,
@@ -103,31 +105,35 @@ export const {
             token.isTwoFactorEnabled = session.user.isTwoFactorEnabled;
           }
 
-          console.log({
-            fromCallbackJWT: {
-              trigger,
-              token,
-              user,
-              session,
-              profile,
-              account,
-            },
-          });
+          if (showLogs) {
+            console.log({
+              fromCallbackJWT: {
+                trigger,
+                token,
+                user,
+                session,
+                profile,
+                account,
+              },
+            });
+          }
         }
       }
 
-      // if (user) {
-      console.log({
-        fromCallbackJWT: {
-          trigger,
-          token,
-          user,
-          session,
-          profile,
-          account,
-        },
-      });
-      // }
+      if (showLogs) {
+        // if (user) {
+        console.log({
+          fromCallbackJWT: {
+            trigger,
+            token,
+            user,
+            session,
+            profile,
+            account,
+          },
+        });
+        // }
+      }
 
       return token;
     },
@@ -154,16 +160,18 @@ export const {
         }
       }
 
-      console.log({
-        fromCallbackSession: {
-          trigger,
-          token,
-          session,
-          sessionUser: session.user,
-          newSession,
-          user,
-        },
-      });
+      if (showLogs) {
+        console.log({
+          fromCallbackSession: {
+            trigger,
+            token,
+            session,
+            sessionUser: session.user,
+            newSession,
+            user,
+          },
+        });
+      }
 
       return session;
     },
