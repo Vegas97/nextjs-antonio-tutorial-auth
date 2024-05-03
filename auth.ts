@@ -10,6 +10,7 @@ export const {
   auth,
   signIn,
   signOut,
+  unstable_update,
 } = NextAuth({
   pages: {
     signIn: "/auth/login",
@@ -67,45 +68,95 @@ export const {
 
       return true;
     },
-    async jwt({ token, user, session, profile, account }) {
-      // if user exist, means we are on signIn, we add the user role to the token
-      if (user && user.role) {
-        token.role = user.role;
+    async jwt({ token, user, session, profile, account, trigger }) {
+      if (trigger !== undefined) {
+        if ((trigger === "signIn" || trigger === "signUp") && user) {
+          if (user.role) {
+            token.role = user.role;
+          }
+
+          if (user.email) {
+            token.email = user.email;
+          }
+
+          if (user.name) {
+            token.name = user.name;
+          }
+
+          if (user.hasOwnProperty("isTwoFactorEnabled")) {
+            token.isTwoFactorEnabled = user.isTwoFactorEnabled;
+          }
+        } else if (trigger === "update" && session && session.user) {
+          if (session.user.role) {
+            token.role = session.user.role;
+          }
+
+          if (session.user.email) {
+            token.email = session.user.email;
+          }
+
+          if (session.user.name) {
+            token.name = session.user.name;
+          }
+
+          if (session.user.hasOwnProperty("isTwoFactorEnabled")) {
+            token.isTwoFactorEnabled = session.user.isTwoFactorEnabled;
+          }
+
+          console.log({
+            fromCallbackJWT: {
+              trigger,
+              token,
+              user,
+              session,
+              profile,
+              account,
+            },
+          });
+        }
       }
 
-      if (user && user.hasOwnProperty("isTwoFactorEnabled")) {
-        token.isTwoFactorEnabled = user.isTwoFactorEnabled;
-      }
-
-      if (user) {
-        console.log({
-          fromCallbackJWT: {
-            token,
-            user,
-            session,
-            profile,
-            account,
-          },
-        });
-      }
+      // if (user) {
+      console.log({
+        fromCallbackJWT: {
+          trigger,
+          token,
+          user,
+          session,
+          profile,
+          account,
+        },
+      });
+      // }
 
       return token;
     },
-    async session({ token, session, user, newSession }) {
-      if (token.sub && session.user) {
-        session.user.id = token.sub;
-      }
+    async session({ token, session, user, newSession, trigger }) {
+      if (session.user) {
+        if (token.sub) {
+          session.user.id = token.sub;
+        }
 
-      if (token.role && session.user) {
-        session.user.role = token.role as UserRole;
-      }
+        if (token.role) {
+          session.user.role = token.role as UserRole;
+        }
 
-      if (token.hasOwnProperty("isTwoFactorEnabled") && session.user) {
-        session.user.isTwoFactorEnabled = token.isTwoFactorEnabled;
+        if (token.name) {
+          session.user.name = token.name;
+        }
+
+        if (token.email) {
+          session.user.email = token.email;
+        }
+
+        if (token.hasOwnProperty("isTwoFactorEnabled")) {
+          session.user.isTwoFactorEnabled = token.isTwoFactorEnabled;
+        }
       }
 
       console.log({
         fromCallbackSession: {
+          trigger,
           token,
           session,
           sessionUser: session.user,
