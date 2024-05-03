@@ -1,8 +1,46 @@
 import * as z from "zod";
+import { UserRole } from "@prisma/client";
 
-export const SettingsSchema = z.object({
-  name: z.optional(z.string()),
-});
+export const SettingsSchema = z
+  .object({
+    name: z.optional(z.string()),
+    email: z.optional(z.string().email()),
+    role: z.enum([UserRole.ADMIN, UserRole.USER]),
+    isTwoFactorEnabled: z.optional(z.boolean()),
+    password: z
+      .string()
+      .min(6, { message: "Minimum of 6 characters required" })
+      .optional()
+      .or(z.literal("")),
+    newPassword: z
+      .string()
+      .min(6, { message: "Minimum of 6 characters required" })
+      .optional()
+      .or(z.literal("")),
+    confirmNewPassword: z
+      .string()
+      .min(6, { message: "Minimum of 6 characters required" })
+      .optional()
+      .or(z.literal("")),
+  })
+  .refine(
+    (data) => {
+      console.log({ data });
+      return !(data.password && !data.newPassword);
+    },
+    {
+      message: "New password is required!",
+      path: ["newPassword"],
+    },
+  )
+  .refine((data) => !(data.newPassword && !data.password), {
+    message: "Current Password is required!",
+    path: ["password"],
+  })
+  .refine((data) => data.newPassword === data.confirmNewPassword, {
+    path: ["confirmNewPassword"],
+    message: "New Passwords do not match",
+  });
 
 export const LoginSchema = z.object({
   email: z.string().email({
@@ -55,5 +93,5 @@ export const NewPasswordWithRepeatSchema = z
   })
   .refine((data) => data.password === data.confirmPassword, {
     path: ["confirmPassword"],
-    message: "Passwords does not match",
+    message: "Passwords do not match",
   });
