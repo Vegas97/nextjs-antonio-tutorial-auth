@@ -20,7 +20,9 @@ export const {
   },
   events: {
     async linkAccount({ user }) {
-      console.log({ fromEventLinkAccount: user });
+      if (showLogs) {
+        console.log({ fromEventLinkAccount: user });
+      }
 
       await db.user.update({
         where: {
@@ -32,7 +34,9 @@ export const {
       });
     },
     // async signIn({ user }) {
-    //   console.log({ fromEventSignIn: user });
+    //   if (showLogs) {
+    //     console.log({ fromEventSignIn: user });
+    //   }
     // },
   },
   callbacks: {

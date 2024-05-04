@@ -3,28 +3,23 @@
 // React and Next.js Imports
 import { AuthError } from "next-auth";
 import { signIn } from "@/auth";
-import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
-
-// Schema Imports
+import { DEFAULT_LOGIN_REDIRECT } from "@/routes"; // Schema Imports
 import * as z from "zod";
-import { LoginSchema } from "@/schemas";
-
-// Data Imports
+import { LoginSchema } from "@/schemas"; // Data Imports
 import { db } from "@/lib/db";
 import { getUserByEmail } from "@/data/user";
 import { getTwoFactorTokenByEmail } from "@/data/two-factor-token";
-import { getTwoFactorConfirmationByUserId } from "@/data/two-factor-confirmation";
-
-// Tokens & Mail Imports
+import { getTwoFactorConfirmationByUserId } from "@/data/two-factor-confirmation"; // Tokens & Mail Imports
 import { sendTwoFactorTokenEmail, sendVerificationEmail } from "@/lib/mail";
 import {
   generateTwoFactorToken,
   generateVerificationToken,
 } from "@/lib/tokens";
 
-export const login = async (values: z.infer<typeof LoginSchema>) => {
-  console.log(values);
-
+export const login = async (
+  values: z.infer<typeof LoginSchema>,
+  callbackUrl?: string | null,
+) => {
   const validatedFields = LoginSchema.safeParse(values);
 
   if (!validatedFields.success) {
@@ -34,8 +29,6 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
   const { email, password, code } = validatedFields.data;
 
   const existingUser = await getUserByEmail(email);
-
-  console.log("existingUser", existingUser);
 
   // if user doesn't exist or doesn't have email/password (means they signed up with a provider)
   if (!existingUser || !existingUser.email || !existingUser.password) {
@@ -104,11 +97,9 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
     await signIn("credentials", {
       email,
       password,
-      redirectTo: DEFAULT_LOGIN_REDIRECT,
+      redirectTo: callbackUrl || DEFAULT_LOGIN_REDIRECT,
     });
   } catch (error) {
-    console.log("error", error);
-
     if (error instanceof AuthError) {
       switch (error.type) {
         case "CredentialsSignin":

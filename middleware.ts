@@ -49,7 +49,15 @@ export default auth(
 
     // if is not logged in and the route is not public, redirect to the login page
     if (!isLoggedIn && !isPublicRoute) {
-      return Response.redirect(new URL("/auth/login", nextUrl));
+      let callbackUrl = nextUrl.pathname;
+      if (nextUrl.search) {
+        callbackUrl += nextUrl.search;
+      }
+      const encodedCallbackUrl = encodeURIComponent(callbackUrl);
+
+      return Response.redirect(
+        new URL(`/auth/login?callbackUrl=${encodedCallbackUrl}`, nextUrl),
+      );
     }
 
     // at this point we know that:

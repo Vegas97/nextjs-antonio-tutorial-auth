@@ -23,16 +23,10 @@ export const SettingsSchema = z
       .optional()
       .or(z.literal("")),
   })
-  .refine(
-    (data) => {
-      console.log({ data });
-      return !(data.password && !data.newPassword);
-    },
-    {
-      message: "New password is required!",
-      path: ["newPassword"],
-    },
-  )
+  .refine((data) => !(data.password && !data.newPassword), {
+    message: "New password is required!",
+    path: ["newPassword"],
+  })
   .refine((data) => !(data.newPassword && !data.password), {
     message: "Current Password is required!",
     path: ["password"],

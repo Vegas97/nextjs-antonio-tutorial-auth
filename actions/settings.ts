@@ -113,12 +113,5 @@ export const settings = async (values: z.infer<typeof SettingsSchema>) => {
 
   const userSession = session?.user;
 
-  console.log({
-    settingsRes: {
-      updatedUser,
-      userSession,
-    },
-  });
-
   return { success: `Settings Updated for ${values.name}` };
 };
